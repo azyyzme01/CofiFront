@@ -1,0 +1,172 @@
+<div class="container">
+    <h2 class="my-4">Annual Performance Appraisal Form</h2>
+
+    <form [formGroup]="performanceForm" (ngSubmit)="onSubmit()">
+        <!-- User Details Section -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="userId">User ID</label>
+                <input type="text" id="userId" formControlName="userId" class="form-control" (blur)="onUserIdBlur()">
+            </div>
+        </div>
+
+        <!-- Personal Information Section -->
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" formControlName="firstName" class="form-control" >
+            </div>
+            <div class="col-md-6">
+                <label for="lastName">Last Name</label>
+                <input type="text" id="lastName" formControlName="lastName" class="form-control" >
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="jobTitle">Job Title</label>
+                <input type="text" id="jobTitle" formControlName="jobTitle" class="form-control" >
+            </div>
+            <div class="col-md-6">
+                <label for="entity">Entity</label>
+                <input type="text" id="entity" formControlName="entity" class="form-control" >
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="department">Department</label>
+                <input type="text" id="department" formControlName="department" class="form-control" >
+            </div>
+            <div class="col-md-6">
+                <label for="hierarchicalManager">Hierarchical Manager</label>
+                <input type="text" id="hierarchicalManager" formControlName="hierarchicalManager" class="form-control" >
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="inPositionSince">In Position Since</label>
+                <input type="date" id="inPositionSince" formControlName="inPositionSince" class="form-control" >
+            </div>
+            <div class="col-md-6">
+                <label for="mobility">Mobility</label>
+                <input type="text" id="mobility" formControlName="mobility" class="form-control" >
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="appraisalPeriodFrom">Appraisal Period From</label>
+                <input type="date" id="appraisalPeriodFrom" formControlName="appraisalPeriodFrom" class="form-control">
+            </div>
+            <div class="col-md-6">
+                <label for="appraisalPeriodTo">Appraisal Period To</label>
+                <input type="date" id="appraisalPeriodTo" formControlName="appraisalPeriodTo" class="form-control">
+            </div>
+        </div>
+
+        <!-- Objectives Section -->
+        <h4 class="my-4">Objectives</h4>
+        <div formArrayName="objectives">
+            <div *ngFor="let objective of objectives.controls; let i = index" [formGroupName]="i" class="border p-3 mb-3">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label for="weight">Weight</label>
+                        <input type="number" formControlName="weight" class="form-control">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="kpi">KPI</label>
+                        <input type="text" formControlName="kpi" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="target">Target</label>
+                        <input type="number" formControlName="target" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="resultAchieved">Result Achieved</label>
+                        <input type="number" formControlName="resultAchieved" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="percentageTargetRealization">%</label>
+                        <input type="text" formControlName="percentageTargetRealization" class="form-control" readonly>
+                    </div>
+                    <div class="col-md-1">
+                        <label for="score">Score</label>
+                        <input type="text" formControlName="score" class="form-control" readonly>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-11">
+                        <label for="comments">Comments</label>
+                        <textarea formControlName="comments" class="form-control"></textarea>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="button" class="btn btn-danger" (click)="removeObjective(i)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" (click)="addObjective()">Add Objective</button>
+
+        <!-- Competencies Section -->
+        <h4 class="my-4">Competencies</h4>
+        <div formArrayName="competencies">
+            <div *ngFor="let competency of competencies.controls; let j = index" [formGroupName]="j" class="border p-3 mb-3">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="competency">Competency</label>
+                        <select formControlName="competency" class="form-control" (change)="onCompetencyChange(j)">
+                            <option *ngFor="let comp of competenciesList" [value]="comp.CompetencyID">
+                                {{ comp.Name }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="subCompetency">Sub Competency</label>
+                        <select formControlName="subCompetency" class="form-control">
+                            <option *ngFor="let subCompetency of filteredSubCompetencies" [value]="subCompetency.Name">
+                                {{ subCompetency.Name }}
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <label for="requiredLevel">Required Level</label>
+                        <input type="number" formControlName="requiredLevel" class="form-control">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="proficiencyLevel">Proficiency Level</label>
+                        <input type="number" id="proficiencyLevel" formControlName="proficiencyLevel" class="form-control" required>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <label for="score">Score</label>
+                        <input type="number" formControlName="score" class="form-control">
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <label for="comments">Comments</label>
+                        <textarea formControlName="comments" class="form-control"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="developmentNeeds">Learning and Development Needs</label>
+                        <textarea formControlName="developmentNeeds" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12 text-right">
+                        <button type="button" class="btn btn-danger" (click)="removeCompetency(j)">Remove Competency</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" (click)="addCompetency()">Add Competency</button>
+
+        <!-- Submit Button -->
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </form>
+</div>
